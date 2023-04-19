@@ -38,14 +38,14 @@ class ListenerShell:
                 client.send('ACTIVE', [])
                 data, cwd = client.receive(2021)
                 if data == -1 and cwd == -1:
-                    Style.neg_sys_msg('Client {} inactive'.format(index))
+                    Style.neg_sys_msg(f'Client {index} inactive')
             except socket.error:
-                Style.neg_sys_msg('Client {} inactive'.format(index))
+                Style.neg_sys_msg(f'Client {index} inactive')
             else:
                 if data == 'ACTIVE':
-                    Style.pos_sys_msg('Client {} active'.format(index))
+                    Style.pos_sys_msg(f'Client {index} active')
                 else:
-                    Style.neg_sys_msg('Client {} inactive'.format(index))
+                    Style.neg_sys_msg(f'Client {index} inactive')
             index += 2
     def __start_client_shell(self):
         index = int(self.__command[8])
@@ -64,10 +64,10 @@ client ClientShell:
         self.client.send('', '')
         output, cwd = self.client.recieve(2084)
         if output == -2 and cwd == -2:
-            return 
+            return
         while True:
             try:
-                command = input('{} > '.format(cwd))
+                command = input(f'{cwd} > ')
             except  KeyboardInterrupt:
                 print()
                 _= self.execute('exit')

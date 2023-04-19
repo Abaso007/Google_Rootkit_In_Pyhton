@@ -23,7 +23,7 @@ class Tor:
             tor_process = sp.Popen(path, shrll=True, stdout=sp.PIPE, stderr=sp.PIPE)
             print(tor_process.stdout.read() + tor_process.stderr.read())
         except Exception as error:
-            print(str(error))
+            print(error)
             sys.exit(2)
         print('Started tor')
         return tor_process

@@ -31,8 +31,6 @@ class Client:
                 break
             if execution_status == -2:
                 continue
-            elif execution_status == 0:
-                pass
         self.initialize_network()
     def execute(self, task, args) -> int:
         if task == 'EXECUTE':
